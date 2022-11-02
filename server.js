@@ -53,8 +53,12 @@ console.log(senderIps);
                     // var senderStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.0'), textByLine[j].indexOf('ok'));
                     // var receiverStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.5'), textByLine[j].indexOf('ok'));
                     // var unknownUserError = textByLine[j].slice(textByLine[j].indexOf('550 5.1.1'), textByLine[j].indexOf('rejecting'));
-                    
-                    
+                    var senderMailIds = line2.slice(line2.indexOf('MAIL'), line2.indexOf('>'));
+                    var receiverMailIds = line2.slice(line2.indexOf('RCPT'), line2.indexOf('>'));
+                    var senderStatusOk = line2.slice(line2.indexOf('250 2.1.0'), line2.indexOf('ok'));
+                    var receiverStatusOk = line2.slice(line2.indexOf('250 2.1.5'), line2.indexOf('ok'));
+                    var unknownUserError = line2.slice(line2.indexOf('550 5.1.1'), line2.indexOf('rejecting'));
+
 
 
                   
