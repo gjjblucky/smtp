@@ -1,209 +1,102 @@
+const cors = require('cors');
 var express = require("express");
-var mysql = require('mysql');
+const mysql = require('mysql2/promise');
 const db = require('./db')
 var bodyParser = require('body-parser')
-
+// create the connection
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
 app.use(bodyParser.json())
 
 
+app.use(cors());
 
+const fs = require('fs');
+const file = "./s20220921.txt";
+const text = fs.readFileSync(file, 'utf-8');
+const textByLine = text.split('\n');
 
-var fs = require('fs');
-var file = "./s20220921.txt";
-var text = fs.readFileSync(file, 'utf-8');
-var textByLine = text.split('\n');
-
-// console.log(textByLine.length);
-
-
-var data = 'Connected';
-var count = (text.match(/data/g)).length;
-
-
-// for (var i = 0; i < count; i++) {
-
-//   var line = textByLine[i];
-//   if (line.includes('Connected')) {
-
-//     //position of ip and position of position of <<
-//     var senderIps = textByLine[i].slice(textByLine[i].indexOf('IP'), textByLine[i].indexOf('<<'));
-//     //  console.log(senderIps);  
-
-//     for (var j = i; j < count; j++) {
-//       var line2 = textByLine[j];
-
-//       //print sendersmail ids
-//       if (line2.includes('MAIL FROM:') || line2.includes('RCPT TO:') || line2.includes('250 2.1.0') || line2.includes('250 2.1.5') || line2.includes('550 5.1.1')) {
-
-//         var senderMailIds = textByLine[j].slice(textByLine[j].indexOf('MAIL'), textByLine[j].indexOf('>'));
-//         var receiverMailIds = textByLine[j].slice(textByLine[j].indexOf('RCPT'), textByLine[j].indexOf('>'));
-//         var senderStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.0'), textByLine[j].indexOf('ok'));
-//         var receiverStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.5'), textByLine[j].indexOf('ok'));
-//         var unknownUserError = textByLine[j].slice(textByLine[j].indexOf('550 5.1.1'), textByLine[j].indexOf('rejecting'));
-
-
-//         // console.log(senderMailIds);
-
-
-//         break;
-//       }
-
-//       // print receiver mail ids
-//       //  if( line2.includes('RCPT TO:') ) {
-
-//       //             var receiverMailIds =textByLine[j].slice(textByLine[j].indexOf('RCPT'),textByLine[j].indexOf('>'));
-
-//       //             // console.log(receiverMailIds);
-
-
-//       //               break;
-//       //         }
-
-//       //print successfully send mails from sender
-//       // if( line2.includes('250 2.1.0') ) {
-
-//       //     var senderStatusOk =textByLine[j].slice(textByLine[j].indexOf('250 2.1.0'),textByLine[j].indexOf('ok'));
-
-//       //     // console.log(senderStatusOk);
-
-
-//       //       break;
-//       // }
-
-//       // print successfully receive mail by receiver
-//       // if( line2.includes('250 2.1.5') ) {
-
-//       //     var receiverStatusOk=textByLine[j].slice(textByLine[j].indexOf('250 2.1.5'),textByLine[j].indexOf('ok'));
-
-//       //     // console.log(receiverStatusOk);
-
-
-//       //       break;
-//       // }
-
-//       //print unknown user error of email
-//       // if( line2.includes('550 5.1.1') ) {
-
-//       //   var unknownUserError=textByLine[j].slice(textByLine[j].indexOf('550 5.1.1'),textByLine[j].indexOf('rejecting'));
-
-//       //   // console.log(unknownUserError);
-
-
-//       //     break;
-//       // }
-
-
-
-
-//       // if(line2.includes('Disconnected'))
-//       // {
-//       //      console.log(i + " "+ line);
-//       //     console.log(j + " "+ line2);
-
-//       //     break;
-//       // }   
-
-//     }
-//   }
-// }
-
-
-// app.use('/',(req,res) =>{
-//   res.send('hyy hello ');
-// })
-
-
-app.use('/', async (req, res) => {
-  res.setHeader('Content-Type', 'text/plain')
-  var count = (text.match(/data/g)).length;
-
-
-  for (var i = 0; i < 5000; i++) {
-
-    var line = textByLine[i];
-    if (line.includes('Connected')) {
-
-      //position of ip and position of position of <<
-      var senderIps = textByLine[i].slice(textByLine[i].indexOf('IP'), textByLine[i].indexOf('<<'));
-      //  console.log(senderIps);  
-
-      for (var j = i; j < 5000; j++) {
-        var line2 = textByLine[j];
-
-        //print sendersmail ids
-        if (line2.includes('MAIL FROM:') || line2.includes('RCPT TO:') || line2.includes('250 2.1.0') || line2.includes('250 2.1.5') || line2.includes('550 5.1.1')) {
-
-          var senderMailIds = textByLine[j].slice(textByLine[j].indexOf('MAIL'), textByLine[j].indexOf('>'));
-          var receiverMailIds = textByLine[j].slice(textByLine[j].indexOf('RCPT'), textByLine[j].indexOf('>'));
-          var senderStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.0'), textByLine[j].indexOf('ok'));
-          var receiverStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.5'), textByLine[j].indexOf('ok'));
-          var unknownUserError = textByLine[j].slice(textByLine[j].indexOf('550 5.1.1'), textByLine[j].indexOf('rejecting'));
-
-
-
-          console.log("sendermail@@@",senderMailIds)
-
-        
-        let query=db.query(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
-                     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
-                     (${req.body?.main_id},
-                             ${(senderMailIds || "")},
-                             ${(receiverMailIds || "")},
-                            ${req.body?.fom_ip},
-                           ${req.body?.top_ip},
-                             ${req.body?.email_size},
-                             "ok",
-                             ${req.body?.date_time},
-                             ${req.body?.jeo_location},
-                            ${(unknownUserError || "")},
-                            ${(req.body?.user_creation_date)}`)
-              query.on('error',function(err){
-
-              }).on('result',function(row){
-                 res.status(201).json({
-                    data:row
-                 })
-              })       
-
-         break;
+app.get('/', async (req, res) => {
+    const connection = await mysql.createConnection(
+        {
+            host: "localhost",
+            user: "root",
+            password: "Escale@123",
+            database: "smtps"
         }
+    );
 
-        
-      }
-    }
-  }
-
+    res.setHeader('Content-Type', 'text/plain')
+    var count = (text.match(/data/g)).length;
 
 
+    for (let i = 0; i <= 100; i++) {
+     
+        let line = textByLine;
+    //   for(let j=i;j<=250;j++){
+    //     // if(line[i].includes('Connected')){
+    //     //     console.log(i);
+            
+    //             if(line[i].includes('Connected') && line[j].includes('Disconnected')){
+    //                 let line2 =[];
+    //                 line2=line.slice(line[i].indexOf('Connected'), line[j].indexOf('Disconnected'))
+    //                 console.log(line2);
+    //             }
+    //         // }
+    //     }
+ 
+if (line[i].includes('MAIL FROM:') || line[i].includes('RCPT TO:') || line[i].includes('250 2.1.0') || line[i].includes('250 2.1.5') || line[i].includes('550 5.1.1') || line[i].includes('Connected'))
+ {
 
- })
+                 
+ var senderMailIds = line[i].slice(line[i].indexOf('MAIL'), line[i].indexOf('>'));
+ 
+ var receiverMailIds = line[i].slice(line[i].indexOf('RCPT'), line[i].indexOf('>'));
+ var senderIps = line[i].slice(line[i].indexOf('IP'), line[i].indexOf('<<'));
+ var senderStatusOk = line[i].slice(line[i].indexOf('250 2.1.0'), line[i].indexOf('ok'));
+ var receiverStatusOk = line[i].slice(line[i].indexOf('250 2.1.5'), line[i].indexOf('ok'));
+ var unknownUserError = line[i].slice(line[i].indexOf('550 5.1.1'), line[i].indexOf('rejecting'));
+              
+   const [rows, fields] =
+    await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
+   top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
+    (?,?,?,?,?,?,?,?,?,?,?)`, [null,
+     (senderMailIds || null),
+     (receiverMailIds || null),
+    (senderIps || null),
+    null,
+    null,
+    "ok",
+    null,
+    null,
+    null,
+    null]);
+ }
 
-
-console.log(count);
-
-
-app.listen(3000, () => {
-  console.log("ok good very good");
+}
+   res.send("data successfully inserted");
 })
 
-
-app.use('/fetchalldata', async(req,res)=>{
-    db.query('select*from logs_data',[],function(err,result,field){
-      if(err){
-        res.status(500).json({
-          error:err
-        })
-      }else{
-        console.log("result@@@",result);
-        res.status(200).json({
-          data:result
-        })
-      }
+app.get('/fetchalldata', async (req, res) => {
+    db.query('select*from logs_data', [], function (err, result, field) {
+        if (err) {
+            res.status(500).json({
+                error: err
+            })
+        } else {
+            // console.log("result@@@",result);
+            res.status(200).json({
+                "status":true,
+                data: result
+            })
+        }
     })
-})
+});
 
+//   console.log(count);
+
+
+app.listen(3090, () => {
+    console.log("ok good very good");
+})
