@@ -30,36 +30,33 @@ app.get('/', async (req, res) => {
     res.setHeader('Content-Type', 'text/plain')
     var count = (text.match(/data/g)).length;
 
-// var z=0 ;
-    for (let i = 0; i <= 250; i++) {
-//         z++;
-// console.log(z);
+
+    for (let i = 0; i <= 100; i++) {
+     
         let line = textByLine;
-        
-        if (line[i].includes('Connected')) {
-
-            //position of ip and position of position of <<
-            var senderIps = line[i].slice(line[i].indexOf('IP'), line[i].indexOf('<<'));
-           
-    // console.log(senderIps);
-            for (let j = 0; j <= line[i].length; j++) {
-                // let line2 = textByLine[j];
-                
-
-                if (line[i].includes('MAIL FROM:') || line[i].includes('RCPT TO:') || line[i].includes('250 2.1.0') || line[i].includes('250 2.1.5') || line[i].includes('550 5.1.1'))   
-// if (line2.includes('MAIL FROM:') || line2.includes('RCPT TO:') || line2.includes('250 2.1.0') || line2.includes('250 2.1.5') || line2.includes('550 5.1.1'))
+    //   for(let j=i;j<=250;j++){
+    //     // if(line[i].includes('Connected')){
+    //     //     console.log(i);
+            
+    //             if(line[i].includes('Connected') && line[j].includes('Disconnected')){
+    //                 let line2 =[];
+    //                 line2=line.slice(line[i].indexOf('Connected'), line[j].indexOf('Disconnected'))
+    //                 console.log(line2);
+    //             }
+    //         // }
+    //     }
+ 
+if (line[i].includes('MAIL FROM:') || line[i].includes('RCPT TO:') || line[i].includes('250 2.1.0') || line[i].includes('250 2.1.5') || line[i].includes('550 5.1.1') || line[i].includes('Connected'))
  {
 
-                    // var senderMailIds = textByLine[j].slice(textByLine[j].indexOf('MAIL'), textByLine[j].indexOf('>'));
-                    // var receiverMailIds = textByLine[j].slice(textByLine[j].indexOf('RCPT'), textByLine[j].indexOf('>'));
-                    // var senderStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.0'), textByLine[j].indexOf('ok'));
-                    // var receiverStatusOk = textByLine[j].slice(textByLine[j].indexOf('250 2.1.5'), textByLine[j].indexOf('ok'));
-                    // var unknownUserError = textByLine[j].slice(textByLine[j].indexOf('550 5.1.1'), textByLine[j].indexOf('rejecting'));
- var senderMailIds = line2.slice(line2.indexOf('MAIL'), line2.indexOf('>'));
- var receiverMailIds = line2.slice(line2.indexOf('RCPT'), line2.indexOf('>'));
- var senderStatusOk = line2.slice(line2.indexOf('250 2.1.0'), line2.indexOf('ok'));
- var receiverStatusOk = line2.slice(line2.indexOf('250 2.1.5'), line2.indexOf('ok'));
- var unknownUserError = line2.slice(line2.indexOf('550 5.1.1'), line2.indexOf('rejecting'));
+                 
+ var senderMailIds = line[i].slice(line[i].indexOf('MAIL'), line[i].indexOf('>'));
+ 
+ var receiverMailIds = line[i].slice(line[i].indexOf('RCPT'), line[i].indexOf('>'));
+ var senderIps = line[i].slice(line[i].indexOf('IP'), line[i].indexOf('<<'));
+ var senderStatusOk = line[i].slice(line[i].indexOf('250 2.1.0'), line[i].indexOf('ok'));
+ var receiverStatusOk = line[i].slice(line[i].indexOf('250 2.1.5'), line[i].indexOf('ok'));
+ var unknownUserError = line[i].slice(line[i].indexOf('550 5.1.1'), line[i].indexOf('rejecting'));
               
    const [rows, fields] =
     await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
@@ -75,9 +72,9 @@ app.get('/', async (req, res) => {
     null,
     null,
     null]);
- } }
- break; 
-}}
+ }
+
+}
    res.send("data successfully inserted");
 })
 
