@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
   for (let i = 0; i <= 1000; i++) {
 
     let line = textByLine;
-    let senderMailIds;
+    let senderMailIds;       
     let receiverMailIds;
     let senderIps;
     let senderStatusOk;
@@ -51,25 +51,24 @@ app.get('/', async (req, res) => {
     let receiverStatusOk;
     let isdata = 0;
 
-
+    // console.log("connected " + i);
 
     if (line[i].includes('Connected')) {
-      console.log("connected " + i);
+    
+      senderIps = line[i].slice(line[i].indexOf('='), line[i].indexOf('<<'));
+
       for (let j = i; j <= 1000; j++) {
 
 
-        if (line[j].includes('MAIL FROM:')) {
+        if (line[j].includes('MAIL FROM:<')) {
           isdata = 1;
-          senderMailIds = line[j].slice(line[j].indexOf('MAIL'), line[j].indexOf('>'));
-          console.log("insideloop@@",senderMailIds);
+         
+          senderMailIds = line[j].slice(line[j].indexOf(':<'), line[j].indexOf('>'));
+          // console.log("insideloop@@",senderMailIds);
 
         } else if (line[j].includes('RCPT TO:')) {
           isdata = 1;
-          receiverMailIds = line[j].slice(line[j].indexOf('RCPT'), line[j].indexOf('>'));
-
-        } else if (line[j].includes('250 2.1.0')) {
-          isdata = 1;
-          senderIps = line[j].slice(line[j].indexOf('IP'), line[j].indexOf('<<'));
+          receiverMailIds = line[j].slice(line[j].indexOf(':<'), line[j].indexOf('>'));
 
         } else if (line[j].includes('250 2.1.5')) {
           isdata = 1;
@@ -81,18 +80,18 @@ app.get('/', async (req, res) => {
 
         }
         else if (line[j].includes('Disconnected')) {
-          console.log("disconnected " + j);
+          // console.log("disconnected " + j);
           break;
         }
         receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5'), line[j].indexOf('ok'));
       }
     }
 
-    console.log("outsideloop@@",senderMailIds);
+    // console.log("outsideloop@@",senderMailIds);
 
     if(isdata == 1){
       isdata = 0;
-      console.log("data avialable");
+      // console.log("data avialable");
       const [rows, fields] =
       await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
@@ -102,7 +101,7 @@ app.get('/', async (req, res) => {
         (senderIps || null),
         null,
         null,
-        null,
+        'ok',
         null,
         null,
         null,
