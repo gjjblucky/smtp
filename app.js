@@ -39,8 +39,11 @@ app.get('/', async (req, res) => {
   res.setHeader('Content-Type', 'text/plain')
   // var count = (text.match(/data/g)).length;
 
+  
 
   for (let i = 0; i <= 1000; i++) {
+
+
 
     let line = textByLine;
     let senderMailIds;       
@@ -49,41 +52,62 @@ app.get('/', async (req, res) => {
     let senderStatusOk;
     let unknownUserError;
     let receiverStatusOk;
+    let date_time;
+    let mainId;
     let isdata = 0;
+
 
     // console.log("connected " + i);
 
-    if (line[i].includes('Connected')) {
+    if (line[i].includes('Connected') ) {
+
     
-      senderIps = line[i].slice(line[i].indexOf('='), line[i].indexOf('<<'));
+  
+    
+      mainId=line[i].slice(line[i].indexOf('[')+1, line[i].indexOf(']'));
+    
+      
+ 
+     
 
-      for (let j = i; j <= 1000; j++) {
+      senderIps = line[i].slice(line[i].indexOf('=')+1, line[i].indexOf('<<'));
+      date_time=line[i].slice(line[i].indexOf('] ')+1, line[i].indexOf(' C'));
+      
+      for (let j = i; j <= 1000; j++){
 
+        if(line[j].slice(line[j].indexOf('[')+1, line[j].indexOf(']'))==mainId){
 
-        if (line[j].includes('MAIL FROM:<')) {
-          isdata = 1;
-         
-          senderMailIds = line[j].slice(line[j].indexOf(':<'), line[j].indexOf('>'));
-          // console.log("insideloop@@",senderMailIds);
-
-        } else if (line[j].includes('RCPT TO:')) {
-          isdata = 1;
-          receiverMailIds = line[j].slice(line[j].indexOf(':<'), line[j].indexOf('>'));
-
-        } else if (line[j].includes('250 2.1.5')) {
-          isdata = 1;
-          senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0'), line[j].indexOf('ok'));
-
-        } else if (line[j].includes('550 5.1.1')) {
-          isdata = 1;
-          unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1'), line[j].indexOf('rejecting'));
-
+          if (line[j].includes('MAIL FROM:')) {
+            isdata = 1;
+           
+            senderMailIds = line[j].slice(line[j].indexOf(':<')+1, line[j].indexOf('>'));
+            // console.log("insideloop@@",senderMailIds);
+  
+          } else if (line[j].includes('RCPT TO:')) {
+            isdata = 1;
+            receiverMailIds = line[j].slice(line[j].indexOf(':<')+1, line[j].indexOf('>'));
+  
+          } else if (line[j].includes('250 2.1.5')) {
+            isdata = 1;
+            senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0')+1, line[j].indexOf('ok'));
+  
+          } else if (line[j].includes('550 5.1.1')) {
+            isdata = 1;
+            unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1')+1, line[j].indexOf('rejecting'));
+  
+          }
+          else if (line[j].includes('Disconnected')) {
+            // console.log("disconnected " + j);
+            break;
+          }
+          receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5')+1, line[j].indexOf('ok'));
+          
         }
-        else if (line[j].includes('Disconnected')) {
-          // console.log("disconnected " + j);
-          break;
-        }
-        receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5'), line[j].indexOf('ok'));
+        // let view={
+        //   mainId : [senderMailIds][receiverMailIds]
+        // };
+        // console.log(JSON.stringify(   view  )  );
+        
       }
     }
 
@@ -95,14 +119,14 @@ app.get('/', async (req, res) => {
       const [rows, fields] =
       await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
-     (?,?,?,?,?,?,?,?,?,?,?)`, [null,
+     (?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
         (senderMailIds || null),
         (receiverMailIds || null),
         (senderIps || null),
         null,
         null,
         'ok',
-        null,
+        (date_time || null),
         null,
         null,
         null]);
