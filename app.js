@@ -5,11 +5,6 @@ const db = require('./db')
 var bodyParser = require('body-parser')
 
 
-// var geoip=require('geoip-lite');
-// var ip="103.137.165.22";
-// var geo=geoip.lookup(ip);
-// console.log(geo);
-
 
 
 
@@ -28,14 +23,7 @@ const file = "./s20220921.txt";
 const text = fs.readFileSync(file, 'utf-8');
 const textByLine = text.split('\n');
 
-//userid loop
-// for(let i=0;i<textByLine.length;i++){
-//   let x=textByLine;
-//   if(x[i].includes('[')){
-//     let y=x.slice((x[i].indexOf('[')),(x[i].indexOf(']')));
-//     console.log("sd", y);
-//   }
-// }
+
 
 app.get('/', async (req, res) => {
   const connection = await mysql.createConnection(
@@ -48,7 +36,7 @@ app.get('/', async (req, res) => {
   );
 
   res.setHeader('Content-Type', 'text/plain')
-  // var count = (text.match(/data/g)).length;
+
 
   
 
@@ -66,10 +54,11 @@ app.get('/', async (req, res) => {
     let date_time;
     let mainId;
     let mailSize;
+    let geoLocation;
     let isdata = 0;
 
 
-    // console.log("connected " + i);
+
 
     if (line[i].includes('Connected') ) {
 
@@ -77,12 +66,13 @@ app.get('/', async (req, res) => {
   
     
       mainId=line[i].slice(line[i].indexOf('[')+1, line[i].indexOf(']'));
-    
-      
- 
-     
-
       senderIps = line[i].slice(0, line[i].indexOf(' ['));
+
+      
+
+   
+
+
       date_time=line[i].slice(line[i].indexOf('] ')+1, line[i].indexOf(' C'));
       
       for (let j = i; j <= 5000; j++){
@@ -93,14 +83,14 @@ app.get('/', async (req, res) => {
             isdata = 1;
            
             senderMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
-            // console.log("insideloop@@",senderMailIds);
-  
-          }else if (line[j].includes('SIZE=')) {
-            isdata = 1;
+            if (line[j].includes('SIZE=')) {
             mailSize = line[j].slice(line[j].indexOf('E=')+2,line[j].indexOf('T'));
             console.log(mailSize);
+            }
+          
   
-          }  
+          }
+         
           else if (line[j].includes('RCPT TO:')) {
             isdata = 1;
             receiverMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
@@ -115,25 +105,22 @@ app.get('/', async (req, res) => {
   
           }
           else if (line[j].includes('Disconnected')) {
-            // console.log("disconnected " + j);
+         
             break;
           }
           receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5')+1, line[j].indexOf('ok'));
           
         }
-        // let view={
-        //   mainId : [senderMailIds][receiverMailIds]
-        // };
-        // console.log(JSON.stringify(   view  )  );
+      
         
       }
     }
 
-    // console.log("outsideloop@@",senderMailIds);
+
 
     if(isdata == 1){
       isdata = 0;
-      // console.log("data avialable");
+      
       const [rows, fields] =
       await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
@@ -145,7 +132,7 @@ app.get('/', async (req, res) => {
         (mailSize || null),
         'ok',
         (date_time || null),
-        null,
+       (geoLocation || null ) ,
         null,
         null]);
 
@@ -165,7 +152,7 @@ app.get('/fetchalldata', async (req, res) => {
         error: err
       })
     } else {
-      // console.log("result@@@",result);
+    
       res.status(200).json({
         "status": true,
         data: result
