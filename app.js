@@ -3,6 +3,17 @@ var express = require("express");
 const mysql = require('mysql2/promise');
 const db = require('./db')
 var bodyParser = require('body-parser')
+
+
+// var geoip=require('geoip-lite');
+// var ip="103.137.165.22";
+// var geo=geoip.lookup(ip);
+// console.log(geo);
+
+
+
+
+
 // create the connection
 
 var app = express();
@@ -41,7 +52,7 @@ app.get('/', async (req, res) => {
 
   
 
-  for (let i = 0; i <= 1000; i++) {
+  for (let i = 0; i <= 5000; i++) {
 
 
 
@@ -54,6 +65,7 @@ app.get('/', async (req, res) => {
     let receiverStatusOk;
     let date_time;
     let mainId;
+    let mailSize;
     let isdata = 0;
 
 
@@ -70,22 +82,28 @@ app.get('/', async (req, res) => {
  
      
 
-      senderIps = line[i].slice(line[i].indexOf('=')+1, line[i].indexOf('<<'));
+      senderIps = line[i].slice(0, line[i].indexOf(' ['));
       date_time=line[i].slice(line[i].indexOf('] ')+1, line[i].indexOf(' C'));
       
-      for (let j = i; j <= 1000; j++){
+      for (let j = i; j <= 5000; j++){
 
         if(line[j].slice(line[j].indexOf('[')+1, line[j].indexOf(']'))==mainId){
 
           if (line[j].includes('MAIL FROM:')) {
             isdata = 1;
            
-            senderMailIds = line[j].slice(line[j].indexOf(':<')+1, line[j].indexOf('>'));
+            senderMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
             // console.log("insideloop@@",senderMailIds);
   
-          } else if (line[j].includes('RCPT TO:')) {
+          }else if (line[j].includes('SIZE=')) {
             isdata = 1;
-            receiverMailIds = line[j].slice(line[j].indexOf(':<')+1, line[j].indexOf('>'));
+            mailSize = line[j].slice(line[j].indexOf('E=')+2,line[j].indexOf('T'));
+            console.log(mailSize);
+  
+          }  
+          else if (line[j].includes('RCPT TO:')) {
+            isdata = 1;
+            receiverMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
   
           } else if (line[j].includes('250 2.1.5')) {
             isdata = 1;
@@ -124,7 +142,7 @@ app.get('/', async (req, res) => {
         (receiverMailIds || null),
         (senderIps || null),
         null,
-        null,
+        (mailSize || null),
         'ok',
         (date_time || null),
         null,
