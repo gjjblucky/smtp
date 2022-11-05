@@ -4,11 +4,6 @@ const mysql = require('mysql2/promise');
 const db = require('./db')
 var bodyParser = require('body-parser')
 
-
-
-
-
-
 // create the connection
 
 var app = express();
@@ -23,8 +18,6 @@ const file = "./s20220921.txt";
 const text = fs.readFileSync(file, 'utf-8');
 const textByLine = text.split('\n');
 
-
-
 app.get('/', async (req, res) => {
   const connection = await mysql.createConnection(
     {
@@ -37,15 +30,10 @@ app.get('/', async (req, res) => {
 
   res.setHeader('Content-Type', 'text/plain')
 
-
-  
-
   for (let i = 0; i <= 5000; i++) {
 
-
-
     let line = textByLine;
-    let senderMailIds;       
+    let senderMailIds;
     let receiverMailIds;
     let senderIps;
     let senderStatusOk;
@@ -54,93 +42,71 @@ app.get('/', async (req, res) => {
     let date_time;
     let mainId;
     let mailSize;
-    let geoLocation;
+    // let geoLocation;
     let isdata = 0;
 
+    if (line[i].includes('Connected')) {
 
-
-
-    if (line[i].includes('Connected') ) {
-
-    
-  
-    
-      mainId=line[i].slice(line[i].indexOf('[')+1, line[i].indexOf(']'));
+      mainId = line[i].slice(line[i].indexOf('[') + 1, line[i].indexOf(']'));
       senderIps = line[i].slice(0, line[i].indexOf(' ['));
+      date_time = line[i].slice(line[i].indexOf('] ') + 1, line[i].indexOf(' C'));
 
-      
+      for (let j = i; j <= 5000; j++) {
 
-   
-
-
-      date_time=line[i].slice(line[i].indexOf('] ')+1, line[i].indexOf(' C'));
-      
-      for (let j = i; j <= 5000; j++){
-
-        if(line[j].slice(line[j].indexOf('[')+1, line[j].indexOf(']'))==mainId){
+        if (line[j].slice(line[j].indexOf('[') + 1, line[j].indexOf(']')) == mainId) {
 
           if (line[j].includes('MAIL FROM:')) {
             isdata = 1;
-           
-            senderMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
+
+            senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
+
             if (line[j].includes('SIZE=')) {
-            mailSize = line[j].slice(line[j].indexOf('E=')+2,line[j].indexOf('T'));
-            console.log(mailSize);
+              mailSize = line[j].slice(line[j].indexOf('E=') + 2, line[j].indexOf('T'));
+
             }
-          
-  
           }
-         
           else if (line[j].includes('RCPT TO:')) {
             isdata = 1;
-            receiverMailIds = line[j].slice(line[j].indexOf(':<')+2, line[j].indexOf('>'));
-  
+            receiverMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
+
           } else if (line[j].includes('250 2.1.5')) {
             isdata = 1;
-            senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0')+1, line[j].indexOf('ok'));
-  
+            senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0') + 1, line[j].indexOf('ok'));
+
           } else if (line[j].includes('550 5.1.1')) {
             isdata = 1;
-            unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1')+1, line[j].indexOf('rejecting'));
-  
+            unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1') + 1, line[j].indexOf('rejecting'));
+
           }
           else if (line[j].includes('Disconnected')) {
-         
+
             break;
           }
-          receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5')+1, line[j].indexOf('ok'));
-          
+          receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5') + 1, line[j].indexOf('ok'));
+
         }
-      
-        
       }
     }
-
-
-
-    if(isdata == 1){
+    if (isdata == 1) {
       isdata = 0;
-      
-      const [rows, fields] =
-      await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
-    top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
-     (?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
-        (senderMailIds || null),
-        (receiverMailIds || null),
-        (senderIps || null),
-        null,
-        (mailSize || null),
-        'ok',
-        (date_time || null),
-       (geoLocation || null ) ,
-        null,
-        null]);
+      if (senderMailIds != null && receiverMailIds != null) {
+        const [rows, fields] =
+          await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
+top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
+(?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
+          (senderMailIds || null),
+          (receiverMailIds || null),
+          (senderIps || null),
+            null,
+          (mailSize || null),
+            'ok',
+          (date_time || null),
+            null,
+            null,
+            null]);
+      }
 
     }
-    
-
-
-
   }
   res.send("data successfully inserted");
 })
@@ -152,7 +118,6 @@ app.get('/fetchalldata', async (req, res) => {
         error: err
       })
     } else {
-    
       res.status(200).json({
         "status": true,
         data: result
@@ -160,9 +125,6 @@ app.get('/fetchalldata', async (req, res) => {
     }
   })
 });
-
-
-
 
 app.listen(3090, () => {
   console.log("ok good very good");
