@@ -1,4 +1,4 @@
-const {createPool} = require('mysql')
+const {createPool} = require('mysql');
 
 var db= createPool({
     host:"localhost",

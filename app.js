@@ -13,118 +13,126 @@ app.use(bodyParser.json())
 
 app.use(cors());
 
-const fs = require('fs');
-const file = "./s20220921.txt";
-const text = fs.readFileSync(file, 'utf-8');
-const textByLine = text.split('\n');
+// const fs = require('fs');
+// const file = "./s20220921.txt";
+// const text = fs.readFileSync(file, 'utf-8');
+// const textByLine = text.split('\n');
 
-app.get('/', async (req, res) => {
-  const connection = await mysql.createConnection(
-    {
-      host: "localhost",
-      user: "root",
-      password: "Escale@123",
-      database: "smtps"
-    }
-  );
 
-  res.setHeader('Content-Type', 'text/plain')
+// app.get('/', async (req, res) => {
+  
 
-  for (let i = 0; i <= 5000; i++) {
+// const connection = await mysql.createConnection(
+//   {
+//     host: "localhost",
+//     user: "root",
+//     password: "Escale@123",
+//     database: "smtps"
+//   }
+  
+// );
 
-    let line = textByLine;
-    let senderMailIds;
-    let receiverMailIds;
-    let senderIps;
-    let senderStatusOk;
-    let unknownUserError;
-    let receiverStatusOk;
-    let date_time;
-    let mainId;
-    let mailSize;
-    // let geoLocation;
-    let isdata = 0;
+//   res.setHeader('Content-Type', 'text/plain')
 
-    if (line[i].includes('Connected')) {
+//   for (let i = 0; i <= 5000; i++) {
 
-      mainId = line[i].slice(line[i].indexOf('[') + 1, line[i].indexOf(']'));
-      senderIps = line[i].slice(0, line[i].indexOf(' ['));
-      date_time = line[i].slice(line[i].indexOf('] ') + 1, line[i].indexOf(' C'));
+//     let line = textByLine;
+//     let senderMailIds;
+//     let receiverMailIds;
+//     let senderIps;
+//     let senderStatusOk;
+//     let unknownUserError;
+//     let receiverStatusOk;
+//     let date_time;
+//     let mainId;
+//     let mailSize;
+//     // let geoLocation;
+//     let isdata = 0;
 
-      for (let j = i; j <= 5000; j++) {
+//     if (line[i].includes('Connected')) {
 
-        if (line[j].slice(line[j].indexOf('[') + 1, line[j].indexOf(']')) == mainId) {
+//       mainId = line[i].slice(line[i].indexOf('[') + 1, line[i].indexOf(']'));
+//       senderIps = line[i].slice(0, line[i].indexOf(' ['));
+//       date_time = line[i].slice(line[i].indexOf('] ') + 1, line[i].indexOf(' C'));
 
-          if (line[j].includes('MAIL FROM:')) {
-            isdata = 1;
+//       for (let j = i; j <= 5000; j++) {
 
-            senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
+//         if (line[j].slice(line[j].indexOf('[') + 1, line[j].indexOf(']')) == mainId) {
 
-            if (line[j].includes('SIZE=')) {
-              mailSize = line[j].slice(line[j].indexOf('E=') + 2, line[j].indexOf('T'));
+//           if (line[j].includes('MAIL FROM:')) {
+//             isdata = 1;
 
-            }
-          }
-          else if (line[j].includes('RCPT TO:')) {
-            isdata = 1;
-            receiverMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
+//             senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
 
-          } else if (line[j].includes('250 2.1.5')) {
-            isdata = 1;
-            senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0') + 1, line[j].indexOf('ok'));
+//             if (line[j].includes('SIZE=')) {
+//               mailSize = line[j].slice(line[j].indexOf('E=') + 2, line[j].indexOf('T'));
 
-          } else if (line[j].includes('550 5.1.1')) {
-            isdata = 1;
-            unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1') + 1, line[j].indexOf('rejecting'));
+//             }
+//           }
+//           else if (line[j].includes('RCPT TO:')) {
+//             isdata = 1;
+//             receiverMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
 
-          }
-          else if (line[j].includes('Disconnected')) {
+//           } else if (line[j].includes('250 2.1.5')) {
+//             isdata = 1;
+//             senderStatusOk = line[j].slice(line[j].indexOf('250 2.1.0') + 1, line[j].indexOf('ok'));
 
-            break;
-          }
-          receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5') + 1, line[j].indexOf('ok'));
+//           } else if (line[j].includes('550 5.1.1')) {
+//             isdata = 1;
+//             unknownUserError = line[j].slice(line[j].indexOf('550 5.1.1') + 1, line[j].indexOf('rejecting'));
 
-        }
-      }
-    }
-    if (isdata == 1) {
-      isdata = 0;
-      if (senderMailIds != null && receiverMailIds != null) {
-        const [rows, fields] =
-          await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
-top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
-(?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
-          (senderMailIds || null),
-          (receiverMailIds || null),
-          (senderIps || null),
-            null,
-          (mailSize || null),
-            'ok',
-          (date_time || null),
-            null,
-            null,
-            null]);
-      }
+//           }
+//           else if (line[j].includes('Disconnected')) {
 
-    }
-  }
-  res.send("data successfully inserted");
-})
+//             break;
+//           }
+//           receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5') + 1, line[j].indexOf('ok'));
 
-app.get('/fetchalldata', async (req, res) => {
-  db.query('select*from logs_data', [], function (err, result, field) {
-    if (err) {
-      res.status(500).json({
-        error: err
-      })
-    } else {
-      res.status(200).json({
-        "status": true,
-        data: result
-      })
-    }
-  })
-});
+//         }
+//       }
+//     }
+//     if (isdata == 1) {
+//       isdata = 0;
+//       if (senderMailIds != null && receiverMailIds != null) {
+//         const [rows, fields] =
+//           await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
+// top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
+// (?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
+//           (senderMailIds || null),
+//           (receiverMailIds || null),
+//           (senderIps || null),
+//             null,
+//           (mailSize || null),
+//             'ok',
+//           (date_time || null),
+//             null,
+//             null,
+//             null]);
+//       }
+
+//     }
+//   }
+//   res.send("data successfully inserted");
+// })
+
+const userRoutes = require('./Router/smtp');
+
+app.use('/', userRoutes);
+
+// app.get('/fetchalldata', async (req, res) => {
+//   db.query('select*from logs_data', [], function (err, result, field) {
+//     if (err) {
+//       res.status(500).json({
+//         error: err
+//       })
+//     } else {
+//       res.status(200).json({
+//         "status": true,
+//         data: result
+//       })
+//     }
+//   })
+// });
 
 app.listen(3090, () => {
   console.log("ok good very good");
