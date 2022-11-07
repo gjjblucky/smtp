@@ -12,8 +12,10 @@ app.use(bodyParser.json())
 app.use(cors());
 
 const userRoutes = require('./Router/smtp');
+const adminRoutes=require('./Router/admin');
 
 app.use('/', userRoutes);
+app.use('/admin', adminRoutes );
 
 
 app.listen(3090, () => {
