@@ -5,7 +5,7 @@ const adminControllers = require('../controller/admin.js');
 
 const router = express.Router();
 
-router.post('/signup', adminControllers.SignUp);
-router.post('/login', adminControllers.Login);
+router.post('/', adminControllers.SignUp);
+
 
 module.exports = router;
