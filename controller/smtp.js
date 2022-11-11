@@ -5,21 +5,11 @@ const fs = require('fs');
 const file = "./s20220921.txt";
 const text = fs.readFileSync(file, 'utf-8');
 const textByLine = text.split('\n');
-
+const config = require('../newdb')
 
 exports.DATA = (async (req, res) => {
 
-
-  const connection = await mysql.createConnection(
-    {
-      host: "localhost",
-      user: "root",
-      password: "Escale@123",
-      database: "smtps"
-    }
-
-  );
-
+  const connection = await mysql.createConnection(config);
   res.setHeader('Content-Type', 'text/plain')
 
   for (let i = 0; i <= 1000; i++) {
@@ -39,9 +29,7 @@ exports.DATA = (async (req, res) => {
     if (line[i].includes('Connected')) {
 
       mainId = line[i].slice(line[i].indexOf('[') + 1, line[i].indexOf(']'));
-
       senderIps = line[i].slice(0, line[i].indexOf(' ['));
-
       date_time = line[i].slice(line[i].indexOf('] ') + 1, line[i].indexOf(' C'));
 
       for (let j = i; j <= 1000; j++) {
@@ -77,7 +65,6 @@ exports.DATA = (async (req, res) => {
             break;
           }
           receiverStatusOk = line[j].slice(line[j].indexOf('250 2.1.5') + 1, line[j].indexOf('ok'));
-
         }
       }
     }
@@ -89,32 +76,29 @@ exports.DATA = (async (req, res) => {
     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
     (?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
           (senderMailIds || null),
-          (receiverMailIds || null),
-          (senderIps || null),
+          (receiverMailIds|| null),
+          (senderIps ||null),
             null,
-          (mailSize || null),
+          (mailSize|| null),
             'ok',
-          (date_time || null),
+          (date_time|| null),
             null,
             null,
             null]);
-      }
-
+      } 
     }
   }
   res.json({ message: "data successfully inserted" });
-
 })
 
 exports.FetchAllData = (async (req, res) => {
-  db.query('select*from logs_data', [], function (err, result, field) {
-    if (err) {
-      res.status(500).json({
-        error: err
-      })
-    } else {
-      return res.status(200).json({ data: result, success: true })
-    }
-  })
+
+  const connection = await mysql.createConnection(config);
+  const result=await connection.execute('select*from logs_data');
+  if(result!=0){
+    res.status(200).json({ data: result[0], success: true })
+  }else{
+    res.status(404)
+  }
 }
 );
