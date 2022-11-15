@@ -63,7 +63,7 @@ const schemas ={
     }),
     admin:Joi.object().keys({
         user:Joi.string().trim().required().min(3).max(50),
-        password:Joi.string().trim().required().min(3).max(50),
+        password:Joi.string().pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")),
     }),
     company:Joi.object().keys({
         
