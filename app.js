@@ -12,18 +12,18 @@ app.use(bodyParser.json())
 app.use(cors());
 dotenv.config();
 
-const smtpRoutes = require('./Router/smtp');
-const adminRoutes=require('./Router/admin');
-const UserRoutes=require('./Router/user');
-const companyRoutes=require('./Router/company');
-const domainRoutes=require('./Router/domain');
+const smtpRoutes = require('./router/smtp');
+const adminRoutes=require('./router/admin');
+const UserRoutes=require('./router/user');
+const companyRoutes=require('./router/company');
+const domainRoutes=require('./router/domain');
 
-app.use('/', smtpRoutes);
+app.use('/logdata', smtpRoutes);
 app.use('/admin', adminRoutes );
 app.use('/user',UserRoutes);
 app.use('/company',companyRoutes);
 app.use('/domain',domainRoutes);
 
 app.listen(3090, () => {
-  console.log("server running on 3090 port");
+  console.log("server running on 3000 port");
 })
