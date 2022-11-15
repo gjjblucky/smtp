@@ -93,7 +93,7 @@ function sendEmail(email, token) {
     from: 'noreply@gajari.com',
     to:email,
     subject:'For Verification mail',
-      html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3090/reset-password?token=' + token + '">link</a> to reset your password</p>'
+      html: '<p>You requested for reset password, kindly use this <a href="http://43.204.235.74:3090/resetPassword?token=' + token + '">link</a> to reset your password</p>'
   };
   console.log("sendmail")
    mail.sendMail(mailOptions, function(error, info) {
@@ -197,7 +197,7 @@ exports.reset = async (req, res) => {
           from: 'noreply@gajari.com',
           to:email,
           subject:'For Verification mail',
-            html: '<p>You requested for change password, kindly use this <a href="http://localhost:3090/change-password?token=' + token + '">link</a> to change your password</p>'
+            html: '<p>You requested for change password, kindly use this <a href="http://43.204.235.74:3090/updatePassword?token=' + token + '">link</a> to change your password</p>'
         })
         transporter.sendMail(mailOptions, function(error, info) {
           console.log(mailOptions)
@@ -280,3 +280,13 @@ exports.reset = async (req, res) => {
         }
       }
 };
+
+exports.GET=async  (req, res) => {
+  const connection = await mysql.createConnection(config);
+  const result=await connection.execute('select*from user');
+  if(result!=0){
+    res.status(200).json({staus:"200 ok ", data: result[0], success: true })
+  }else{
+    res.status(404).json({status:"404 not found",message:"domain list not found"});
+  }
+}

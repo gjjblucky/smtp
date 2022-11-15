@@ -3,7 +3,7 @@ const domainControllers = require('../controller/domain.js');
 const router = express.Router();
 const {schemas,middlewareValidation} = require("../middelware/helper.js");
 
-router.post('/create', middlewareValidation(schemas.domain),domainControllers.POST);
-router.get('/getlist',domainControllers.GET);
+router.post('/addDomain', middlewareValidation(schemas.domain),domainControllers.POST);
+router.get('/getList',domainControllers.GET);
 
 module.exports = router;
