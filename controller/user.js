@@ -152,7 +152,7 @@ exports.reset = async (req, res) => {
   const connection = await mysql.createConnection(config);
 
     var token = req.body.token;
-    var password = req.body.password;
+    var newPassword = req.body.newPassword;
 
    
    const useremail=await connection.execute('SELECT * FROM user WHERE forget_pass_token ="' + token + '"');
@@ -161,13 +161,17 @@ exports.reset = async (req, res) => {
    if (useremail[0].length != 0){
 
     const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(password, salt);
+    const hash = bcrypt.hashSync(newPassword, salt);
     console.log("hash",hash)
-   
-        await connection.execute(`UPDATE user SET password = "${hash}" WHERE email_id ="${useremail[0][0].email_id}"`);
+console.log(useremail[0][0].password)
+
+    if(hash != useremail[0][0].password){
+      await connection.execute(`UPDATE user SET password = "${hash}" WHERE email_id ="${useremail[0][0].email_id}"`);
      
-        res.status(200).json({status:"200 ok",message:'Your password has been updated successfully'})
-      
+      res.status(201).json({status:"201 created",message:'Your password has been updated successfully'})
+    }else{
+      res.status(403).json({status:"403 Forbidden Error",message:'old password and new password cant be matched'})
+    }
       }else {
         console.log('2');
         res.status(404).json({status:"404 Not Found",message:'Invalid link; please try again'})
@@ -206,11 +210,15 @@ exports.changePassword = async (req, res) => {
     const hashedPassword = useremail[0][0].password
     //get the hashedPassword from result
     if (await bcrypt.compare(oldPassword, hashedPassword)) {
+      // console.log("old password match",await bcrypt.compare(oldPassword, hashedPassword))
 
-    
-   
-  
       if (newPassword == confirmPassword) {
+        // console.log("new password match",newPassword == confirmPassword)
+
+        if(oldPassword != newPassword){
+          // console.log("old",oldPassword == newPassword)
+
+        
 
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(newPassword, salt);
@@ -218,8 +226,12 @@ exports.changePassword = async (req, res) => {
        
             await connection.execute(`UPDATE user SET password = "${hash}" WHERE email_id ="${email}"`);
          
-            res.status(200).json({status:"200 ok",message:'Your password has been changed successfully',success:true})
-          
+            res.status(201).json({status:"201 ok",message:'Your password has been changed successfully',success:true})
+        } 
+        else{
+     
+          res.status(403).json({status:"403 Forbidden Error",message:'old password and new password cant be matched'})
+         }
           }else{
      
         res.status(403).json({status:"403 Forbidden Error",message:'new and confirm passwords are not matching'})
