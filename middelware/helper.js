@@ -43,7 +43,7 @@ const schemas ={
     reset:Joi.object().keys({
 
         token:Joi.string().required(),
-        password:Joi.string().pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")),
+        newPassword:Joi.string().pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")),
     }),
     change:Joi.object().keys({
         email:Joi.string().trim().required().email(),
