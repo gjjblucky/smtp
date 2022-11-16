@@ -4,6 +4,6 @@ const router = express.Router();
 const {schemas,middlewareValidation} = require("../middelware/helper.js");
 
 router.post('/addDomain', middlewareValidation(schemas.domain),domainControllers.POST);
-router.get('/getList',domainControllers.GET);
+router.get('/companyId/:id',domainControllers.GET);
 
 module.exports = router;

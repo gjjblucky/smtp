@@ -40,3 +40,16 @@ exports.GET=async  (req, res) => {
     res.status(404).json({status:"404 not found",message:"domain list not found"});
   }
 }
+
+exports.GET=async  (req, res) => {
+
+  const companyId=req.params.id;
+  const connection = await mysql.createConnection(config);
+
+  const result=await connection.execute(`SELECT * FROM domain WHERE company_id="${companyId}"`);
+  if(result!=0){
+    res.status(200).json({staus:"200 ok ", data: result[0], success: true })
+  }else{
+    res.status(404).json({status:"404 not found",message:"companyId not found"});
+  }
+}
