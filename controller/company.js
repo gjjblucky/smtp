@@ -2,6 +2,7 @@ const mysql = require('mysql2/promise');
 const db = require('../db');
 const config = require('../newdb')
 
+
 exports.POST = async (req, res) => {
 
   const connection = await mysql.createConnection(config);
@@ -39,3 +40,4 @@ exports.GET=async  (req, res) => {
     res.status(404).json({status:"404 not found",message:"company list not found"});
   }
 }
+

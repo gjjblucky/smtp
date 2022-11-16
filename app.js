@@ -1,9 +1,10 @@
 const cors = require('cors');
 var express = require("express");
-const dotenv = require('dotenv');
+
 const mysql = require('mysql2/promise');
 const db = require('./db')
 var bodyParser = require('body-parser')
+
 
 // create the connection
 var app = express();
@@ -11,6 +12,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors());
 dotenv.config();
+
+
+
 
 const smtpRoutes = require('./router/smtp');
 const adminRoutes=require('./router/admin');
