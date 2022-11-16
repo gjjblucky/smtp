@@ -172,11 +172,7 @@ console.log(useremail[0][0].password)
     }else{
       res.status(403).json({status:"403 Forbidden Error",message:'old password and new password cant be matched'})
     }
-      }else {
-        console.log('2');
-        res.status(404).json({status:"404 Not Found",message:'Invalid link; please try again'})
-        
-        }
+      
       }else{
         res.status(404).json({status:"404 Not Found",message:'does not exist '})
       }
