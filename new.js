@@ -16,17 +16,32 @@ async function connectivity(){
    
   const result=await connection.execute('SELECT * FROM Users');
   
-  console.log(result)
+  console.log(result[0])
   connection.end()
 
   }catch(error){
     console.log(error.message)
   }
+
+
+  // router.get('/getList',companyControllers.GET);
+
+
+  // exports.GET=async  (req, res) => {
+  //   const connection = await mysql.createConnection(config);
+  //   const result=await connection.execute('select*from Users');
+  //   if(result!=0){
+  //     res.status(200).json({staus:"200 ok ", data: result[0], success: true })
+  //   }else{
+  //     res.status(404).json({status:"404 not found",message:"domain list not found"});
+  //   }
+  // }
+
  
 
 }
 
-connectivity()
+connectivity();
 
 // simple query
 // connection.query(

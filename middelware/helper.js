@@ -49,9 +49,10 @@ const schemas ={
 
     user :Joi.object().keys({
 
-      
+      //.regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true })
+    //   regex(/^(?=.*[0-9])(?=.*[!@#\$%\^&\*])/, { invert: true })
 
-        name:Joi.string().trim().required().min(3).max(50),
+        name:Joi.string().trim().required().min(3).max(50).regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }).regex(/(?=.*[0-9])/, { invert: true }),
         email:Joi.string().trim().required().email(),
         // password:Joi.string().regex(/^[A-Za-z0-9]+$/).required().min(3).max(8),
          password:Joi.string().pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})")),
@@ -67,12 +68,13 @@ const schemas ={
     }),
     company:Joi.object().keys({
         
-        companyName:Joi.string().trim().required().min(3).max(50),
+        companyName:Joi.string().trim().required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }).regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }),
         companyAddress:Joi.string().trim().required().min(3).max(100),
+        //.regex(/(?=.*[0-9])/,{invert:true})
     }),
     domain:Joi.object().keys({
         // domainName:Joi.string().trim().required().min(3).max(50),
-        domainName:Joi.string().pattern(new RegExp("^(?=.*[.])")).required().min(3).max(50),
+        domainName:Joi.string().trim().pattern(new RegExp("^(?=.*[.])")).required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }).regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }),
         companyId:Joi.number().required(),
     })
     .unknown(true)
