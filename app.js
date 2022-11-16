@@ -21,12 +21,14 @@ const adminRoutes=require('./router/admin');
 const UserRoutes=require('./router/user');
 const companyRoutes=require('./router/company');
 const domainRoutes=require('./router/domain');
+const newDb=require('./router/new.js')
 
 app.use('/logdata', smtpRoutes);
 app.use('/admin', adminRoutes );
 app.use('/user',UserRoutes);
 app.use('/company',companyRoutes);
 app.use('/domain',domainRoutes);
+app.use('/icewrap',newDb);
 
 app.listen(3090, () => {
   console.log("server running on 3000 port");

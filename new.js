@@ -1,4 +1,5 @@
-async function connectivity(){
+
+ exports.GET= async ()=>{
   try{
     const mysql = require('mysql2/promise');
 
@@ -41,7 +42,6 @@ async function connectivity(){
 
 }
 
-connectivity();
 
 // simple query
 // connection.query(

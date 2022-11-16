@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt")
 const mysql = require('mysql2/promise');
 const config = require('../newdb');
 
-
 exports.SignIn = async (req, res) => {
 
   const connection = await mysql.createConnection(config);
@@ -53,13 +52,6 @@ exports.SignIn = async (req, res) => {
  else {
  
   console.log("------> User does not exists")
-  // res.sendStatus(409).json({message:"------> User already exists"})
   res.status(404).json({status:"404 Not Found",message:"------> User does not  exists"});
-
-
-  
-  
-
-
  }
 }
