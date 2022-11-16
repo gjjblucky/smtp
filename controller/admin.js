@@ -15,7 +15,6 @@ exports.SignIn = async (req, res) => {
   const matchemail = await connection.execute(sqlSearch, [user])
 
   if (matchemail[0].length != 0) {
-   
     console.log("gone")
     console.log(matchemail[0][0].password)
     if (await bcrypt.compare( password,matchemail[0][0].password)) {
@@ -29,7 +28,7 @@ exports.SignIn = async (req, res) => {
           // ]);
         const result= await connection.execute(`SELECT * FROM admin WHERE user = "${user}"`)
       
-      if(result!=0){
+       if(result!=0){
       
         res.status(200).json({ message: "admin login successfully" ,data:result[0],status:"The HTTP 200 OK success"});
       
@@ -46,13 +45,17 @@ exports.SignIn = async (req, res) => {
     console.log("---------> Password Incorrect")
     res.status(401).json({message:"password incorrect",status:"The HTTP 401 Unauthorized response "})
        }
-
-    
-    }
+  }
  else {
  
   console.log("------> User does not exists")
   // res.sendStatus(409).json({message:"------> User already exists"})
   res.status(404).json({status:"404 Not Found",message:"------> User does not  exists"});
+
+
+  
+  
+
+
  }
 }

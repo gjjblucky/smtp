@@ -55,7 +55,7 @@ exports.Login = async (req, res) => {
      if(result!=0){
       let newArr = result[0]
           newArr["token"] = jwtToken
-           res.status(200).json({status:"200 ok", success: true, data: newArr })
+           res.status(200).json({status:"200 ok", success: "login successfully", data: newArr })
      }else{
       res.status(500).json({status:"500 Internal Server Error", message:"Something goes to wrong. Please try again"})
      }
@@ -180,106 +180,9 @@ exports.reset = async (req, res) => {
 
    };
 
-  const sentEmail = async (email, token) => {
-    
-    var transporter = nodemailer.createTransport({
-      host:'smtp.gmail.com',
-      port:587,
-      secure:false,
-      requireTLS:true,
-      auth:{
-          user: 'noreply@gajari.com',
-          pass: 'pmam ynyn zxbi sskp'
-      }
-    });
- 
-   const mailOptions= ({
-          from: 'noreply@gajari.com',
-          to:email,
-          subject:'For Verification mail',
-            html: '<p>You requested for change password, kindly use this <a href="http://43.204.235.74:3090/updatePassword?token=' + token + '">link</a> to change your password</p>'
-        })
-        transporter.sendMail(mailOptions, function(error, info) {
-          console.log(mailOptions)
-            if (info) {
-             
-                console.log(1)
-            } else {
-              
-                console.log("erroroorro",error)
-            }
-        });
-    
-};
-
-   exports.changePassword = async (req, res) => {
-
-    const connection = await mysql.createConnection(config);
-    const { email, password } = req.body;
   
-    const useremail = await connection.execute(`SELECT * FROM user WHERE email_id = "${email}"`);
-  
-    if (useremail[0].length != 0) {
-    
-      var token = randtoken.generate(20);
-     
-      const hashedPassword = useremail[0][0].password
-      //get the hashedPassword from result
-      if (await bcrypt.compare(password, hashedPassword)) {
-
-        const sent = await sentEmail(email, token);
-     
-    
-      if (sent  != '0') {
-        await connection.execute(`UPDATE user SET forget_pass_token = "${token}" WHERE email_id ="${email}"`);
-        
-        res.status(200).json({status:"200 ok",message:'The change password link has been sent to your email address',success:true,token:token})
-        
-         
-      }else{
-       
-        res.status(500).json({status:"500 Internal Server Error",message:'Something goes to wrong. Please try again'})
-        }
-      }else{
-         
-        res.status(401).json({message:"password incorrect",status:"The HTTP 401 Unauthorized response "})
-      }
-    }
-  };
 
 
-  exports.updatePassword = async(req,res) => {
-   
-    const connection = await mysql.createConnection(config);
-
-    var token = req.body.token;
-    var newPassword=req.body.newPassword;
-    var confirmPassword=req.body.confirmPassword;
-
-    const useremail=await connection.execute('SELECT * FROM user WHERE forget_pass_token ="' + token + '"');
-
-    if(useremail[0].length == 0){
-      console.log("if")
-      res.status(404).json({status:"404 Not Found",message:'user does not exist'});
-    }else{
-      console.log("else")
-   if (newPassword == confirmPassword){
-
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(newPassword, salt);
-    console.log("hash",hash)
-   
-        await connection.execute(`UPDATE user SET password = "${hash}" WHERE email_id ="${useremail[0][0].email_id}"`);
-     
-        res.status(200).json({status:"200 ok",message:'Your password has been updated successfully',success:true})
-      
-      }else {
-        console.log('2');
-        res.status(401).json({message:"password incorrect",status:"The HTTP 401 Unauthorized response "})
-        
-        }
-      }
-};
 
 exports.GET=async  (req, res) => {
   const connection = await mysql.createConnection(config);
@@ -290,3 +193,42 @@ exports.GET=async  (req, res) => {
     res.status(404).json({status:"404 not found",message:"domain list not found"});
   }
 }
+
+exports.changePassword = async (req, res) => {
+
+  const connection = await mysql.createConnection(config);
+  const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+  const useremail = await connection.execute(`SELECT * FROM user WHERE email_id = "${email}"`);
+
+  if (useremail[0].length != 0) {
+  
+    const hashedPassword = useremail[0][0].password
+    //get the hashedPassword from result
+    if (await bcrypt.compare(oldPassword, hashedPassword)) {
+
+    
+   
+  
+      if (newPassword == confirmPassword) {
+
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(newPassword, salt);
+        console.log("hash",hash)
+       
+            await connection.execute(`UPDATE user SET password = "${hash}" WHERE email_id ="${email}"`);
+         
+            res.status(200).json({status:"200 ok",message:'Your password has been changed successfully',success:true})
+          
+          }else{
+     
+        res.status(403).json({status:"403 Forbidden Error",message:'new and confirm passwords are not matching'})
+       }
+    }else{
+       
+      res.status(401).json({message:"password incorrect",status:"The HTTP 401 Unauthorized response "})
+    }
+  }else{
+    res.status(404).json({status:"404 Not Found", message:"email id is not found"});
+  }
+};
