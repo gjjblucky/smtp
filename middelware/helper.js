@@ -57,12 +57,12 @@ const schemas ={
     }),
     company:Joi.object().keys({
         
-        companyName:Joi.string().trim().required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }).regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }).regex(/(?=.*[" "])/, { invert: true }),
+        companyName:Joi.string().trim().required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }).regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }),
         companyAddress:Joi.string().trim().required().min(3).max(100),
     }),
     domain:Joi.object().keys({
         // domainName:Joi.string().trim().required().min(3).max(50),
-        domainName:Joi.string().pattern(new RegExp("^(?=.*[.])")).required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }).regex(/(?=.*[" "])/, { invert: true }),
+        domainName:Joi.string().trim().pattern(new RegExp("^(?=.*[.])")).required().min(3).max(50).regex(/(?=.*[0-9])/, { invert: true }),
         companyId:Joi.number().required(),
     })
     .unknown(true)
@@ -72,3 +72,4 @@ module.exports ={middlewareValidation,schemas}
     
 //replace(/\s+/g, ' ')
 //.regex(/[$\(\)<>\!\@\#\%\^\&\*]/, { invert: true }).trim()
+// for space .regex(/(?=.*[" "])/, { invert: true })
