@@ -8,19 +8,23 @@ exports.SignIn = async (req, res) => {
   const connection = await mysql.createConnection(config);
 
   const { user, password} = req.body;
-  const salt = bcrypt.genSaltSync(10)
-  const hashedPassword = bcrypt.hashSync(password, salt);
+  
+  // const salt = bcrypt.genSaltSync(10)
+  // const hashedPassword = bcrypt.hashSync(password, salt);
 
   const sqlSearch = "SELECT * FROM admin WHERE user = ?";
   const matchemail = await connection.execute(sqlSearch, [user])
 
   if (matchemail[0].length != 0) {
-    console.log("gone")
-    console.log(matchemail[0][0].password)
+
+    // console.log("gone")
+    // console.log(matchemail[0][0].password)
+
     if (await bcrypt.compare( password,matchemail[0][0].password)) {
-      console.log("hash",hashedPassword)
-      console.group("passord",password)
-       console.log(await bcrypt.compare(password, hashedPassword))
+
+      // console.log("hash",hashedPassword)
+      // console.group("passord",password)
+      //  console.log(await bcrypt.compare(password, hashedPassword))
           // connection.execute(`INSERT INTO admin (user,password) VALUES
           // (?,?)`, [
           //   (user || null),
