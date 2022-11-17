@@ -6,4 +6,6 @@ const router = express.Router();
 router.get('/', smtpControllers.DATA);
 router.get('/getLogData', smtpControllers.FetchAllData);
 
+router.get('/pagination',smtpControllers.PAGE)
+
 module.exports = router;

@@ -12,7 +12,7 @@ exports.DATA = (async (req, res) => {
   const connection = await mysql.createConnection(config);
   res.setHeader('Content-Type', 'text/plain')
 
-  for (let i = 0; i <= 1000; i++) {
+  for (let i = 0; i <= 5000; i++) {
 
     let line = textByLine;
     let senderMailIds;
@@ -101,3 +101,35 @@ exports.FetchAllData = async (req, res) => {
     res.status(404).json({status:"404 Not Found",message:"smtp log data not found"})
   }
 }
+
+
+
+
+
+
+
+exports.PAGE=async (req,res)=>{
+  const connection = await mysql.createConnection(config);
+
+  const {size ,page}=req.query;
+
+  const limit = size 
+  const offset = page * limit 
+
+  await connection.execute(`SELECT * FROM logs_data  LIMIT ${offset},${limit}`).then(result =>{
+
+    res.status(200).json({status:"200 ok",success:true,data:result[0]});
+   
+  }).catch(error =>{
+    res.status(404).json({status:"404 Not Found",message:error});
+    console.log("error",error);
+  })
+
+
+
+}
+
+
+
+
+
