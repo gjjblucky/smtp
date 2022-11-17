@@ -25,7 +25,7 @@ const adminRoutes=require('./router/admin');
 const UserRoutes=require('./router/user');
 const companyRoutes=require('./router/company');
 const domainRoutes=require('./router/domain');
-const newDb=require('./router/new.js')
+const newDb=require('./router/management.js')
 
 app.use('/logdata', smtpRoutes);
 app.use('/admin', adminRoutes );
