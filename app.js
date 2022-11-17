@@ -31,5 +31,5 @@ app.use('/domain',domainRoutes);
 app.use('/icewrap',newDb);
 
 app.listen(3090, () => {
-  console.log("server running on 3000 port");
+  console.log("server running on 3090 port");
 })
