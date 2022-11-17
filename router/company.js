@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.post('/addCompany', middlewareValidation(schemas.company),companyControllers.POST);
 router.get('/companyId/:id',companyControllers.GET);
+router.get('/getAllList',companyControllers.AllList);
 
 module.exports = router;
