@@ -38,7 +38,8 @@ exports.GET=async  (req, res) => {
   const connection = await mysql.createConnection(config);
 
   const result=await connection.execute(`SELECT * FROM company WHERE id="${companyId}"`);
-  if (result!=0){
+  console.log(result[0]);
+  if (result == []){
 
       res.status(200).json({staus:"200 ok ", data: result[0], success: true })
   } else {

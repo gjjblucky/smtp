@@ -46,7 +46,7 @@ exports.DATA = (async (req, res) => {
 
             senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
 
-name =await connection2.execute(`SELECT *, CONCAT(U_Alias,'@',U_Domain) AS name FROM user where  CONCAT(U_Alias,'@',U_Domain) ="${senderMailIds}"`)
+name =await connection2.execute(`SELECT CONCAT(U_Alias,'@',U_Domain), CONCAT(U_Alias,'@',U_Domain) AS name FROM user where  CONCAT(U_Alias,'@',U_Domain) ="admin@icewarpdemo.com"`)
             
 
 
