@@ -8,32 +8,18 @@ const textByLine = text.split('\n');
 const config = require('../newdb');
 const config2 = require('../managementDb');
 
-async function manage(){
-
-const x='public-folders@icewarpdemo.com'
-
-
-  const connection2 = await mysql.createConnection(config2);
-
-  const name=await connection2.execute(`SELECT * FROM Users WHERE U_Alias+@+U_Domain=x`);
-
-  console.log(name)
-
-}
-manage();
-
-
-
-
 
 exports.DATA = (async (req, res) => {
 
   const connection = await mysql.createConnection(config);
+  const connection2=await mysql.createConnection(config2);
+
   res.setHeader('Content-Type', 'text/plain')
 
   for (let i = 0; i <= 5000; i++) {
 
     let line = textByLine;
+    let name;
     let senderMailIds;
     let receiverMailIds;
     let senderIps;
@@ -60,8 +46,8 @@ exports.DATA = (async (req, res) => {
 
             senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
 
-
-
+name =await connection2.execute(`SELECT *, CONCAT(U_Alias,'@',U_Domain) AS name FROM user where  CONCAT(U_Alias,'@',U_Domain) ="${senderMailIds}"`)
+            
 
 
 
@@ -96,9 +82,10 @@ exports.DATA = (async (req, res) => {
       isdata = 0;
       if (senderMailIds != null && receiverMailIds != null) {
         const [rows, fields] =
-          await connection.execute(`INSERT INTO logs_data (main_id,sender_address,recipient_address,fom_ip,
+          await connection.execute(`INSERT INTO logs_data (name,main_id,sender_address,recipient_address,fom_ip,
     top_ip,email_size,status_val,date_time,jeo_location,error_notification,user_creation_date) VALUES
-    (?,?,?,?,?,?,?,?,?,?,?)`, [(mainId || null),
+    (?,?,?,?,?,?,?,?,?,?,?)`, [(name || null),
+      (mainId || null),
           (senderMailIds || null),
           (receiverMailIds|| null),
           (senderIps ||null),
