@@ -10,10 +10,13 @@ const config2 = require('../managementDb');
 
 async function manage(){
 
+const x='public-folders@icewarpdemo.com'
+
 
   const connection2 = await mysql.createConnection(config2);
 
-  const name=await connection2.execute('SELECT U_Name FROM Users LIMIT 3');
+  const name=await connection2.execute(`SELECT * FROM Users WHERE U_Alias+@+U_Domain=x`);
+  // const name=await connection2.execute('SELECT U_Name FROM Users LIMIT 3');
   console.log(name)
   
   const sendLimit=await connection2.execute('SELECT U_MegabyteSendLimit FROM Users LIMIT 3');
@@ -81,6 +84,11 @@ exports.DATA = (async (req, res) => {
             isdata = 1;
 
             senderMailIds = line[j].slice(line[j].indexOf(':<') + 2, line[j].indexOf('>'));
+
+
+
+
+
 
             if (line[j].includes('SIZE=')) {
               mailSize = line[j].slice(line[j].indexOf('E=') + 2, line[j].indexOf('T'));
