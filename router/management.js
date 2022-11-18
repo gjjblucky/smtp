@@ -1,21 +1,21 @@
 const express = require('express');
-const domainControllers = require('../management.js');
+const managementControllers = require('../controller/management.js');
 
 const router = express.Router();
 
-router.get('/usersData',domainControllers.Users);
-router.get('/userAccessData',domainControllers.USERACCESS);
-router.get('/authClientsData',domainControllers.OauthClients);
-router.get('/loginsData',domainControllers.Logins);
+router.get('/usersData',managementControllers.Users);
+router.get('/userAccessData',managementControllers.userAccess);
+router.get('/authClientsData',managementControllers.OauthClients);
+router.get('/loginsData',managementControllers.Logins);
 
-router.get('/AliasesData',domainControllers.Aliases);
-router.get('/DomainsData',domainControllers.Domains);
-router.get('/MetaDataData',domainControllers.MetaData);
-router.get('/OauthAuthorizationsData',domainControllers.OauthAuthorizations);
-router.get('/OauthRefreshTokensData',domainControllers.OauthRefreshTokens);
-router.get('/OauthTokensData',domainControllers.OauthTokens);
-router.get('/apisessionsData',domainControllers.apisessions);
-router.get('/demoData',domainControllers.demo);
+router.get('/AliasesData',managementControllers.Aliases);
+router.get('/DomainsData',managementControllers.Domains);
+router.get('/MetaDataData',managementControllers.MetaData);
+router.get('/OauthAuthorizationsData',managementControllers.OauthAuthorizations);
+router.get('/OauthRefreshTokensData',managementControllers.OauthRefreshTokens);
+router.get('/OauthTokensData',managementControllers.OauthTokens);
+router.get('/apisessionsData',managementControllers.apisessions);
+router.get('/demoData',managementControllers.demo);
 
 
 module.exports = router;

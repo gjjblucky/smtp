@@ -1,17 +1,13 @@
 const mysql = require('mysql2/promise');
+const config2 = require('../managementDb.js');
+
 
  exports.Users= async (req,res)=>{
 
   try {
 
        // create the connection to database
-       const connection = await mysql.createConnection({
-        host: "103.161.43.86",
-        user: "icewarp_dba",
-        password: "Pwd@2019",
-        database: "icewarp_accounts",
-        port:3306
-        });
+       const connection = await mysql.createConnection(config2);
   
         connection.connect()
 
@@ -30,15 +26,9 @@ const mysql = require('mysql2/promise');
      }
 }
 
-exports.USERACCESS=async (req,res)=>{
+exports.userAccess=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -58,13 +48,7 @@ exports.USERACCESS=async (req,res)=>{
 
 exports.OauthClients=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -84,13 +68,7 @@ exports.OauthClients=async (req,res)=>{
 
 exports.Logins=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -110,13 +88,7 @@ exports.Logins=async (req,res)=>{
 
 exports.Aliases=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -136,13 +108,7 @@ exports.Aliases=async (req,res)=>{
 
 exports.Domains=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -162,13 +128,7 @@ exports.Domains=async (req,res)=>{
 
 exports.MetaData=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -188,13 +148,7 @@ exports.MetaData=async (req,res)=>{
 
 exports.OauthAuthorizations=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -214,13 +168,7 @@ exports.OauthAuthorizations=async (req,res)=>{
 
 exports.OauthRefreshTokens=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -240,13 +188,7 @@ exports.OauthRefreshTokens=async (req,res)=>{
 
 exports.OauthTokens=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -266,13 +208,7 @@ exports.OauthTokens=async (req,res)=>{
 
 exports.apisessions=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 
@@ -292,13 +228,7 @@ exports.apisessions=async (req,res)=>{
 
 exports.demo=async (req,res)=>{
 
-  const connection = await mysql.createConnection({
-    host: "103.161.43.86",
-    user: "icewarp_dba",
-    password: "Pwd@2019",
-    database: "icewarp_accounts",
-    port:3306
-    });
+  const connection = await mysql.createConnection(config2);
 
     connection.connect()
 

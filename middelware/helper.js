@@ -11,7 +11,7 @@ const Joi = require("@hapi/joi");
          } else {
 
                 const {details} = error;
-                response.status(200).json({success:false, message:details})
+                response.status(403).json({success:false, message:details})
             }
         }
     }

@@ -5,7 +5,48 @@ const fs = require('fs');
 const file = "./s20220921.txt";
 const text = fs.readFileSync(file, 'utf-8');
 const textByLine = text.split('\n');
-const config = require('../newdb')
+const config = require('../newdb');
+const config2 = require('../managementDb');
+
+async function manage(){
+
+
+  const connection2 = await mysql.createConnection(config2);
+
+  const name=await connection2.execute('SELECT U_Name FROM Users LIMIT 3');
+  console.log(name)
+  
+  const sendLimit=await connection2.execute('SELECT U_MegabyteSendLimit FROM Users LIMIT 3');
+  console.log(sendLimit)
+  
+  const mailBox=await connection2.execute('SELECT U_MaxBoxSize FROM Users LIMIT 3');
+  console.log(mailBox)
+  
+  const externalMail=await connection2.execute('SELECT U_UseRemoteAddress FROM Users LIMIT 3');
+  console.log(externalMail)
+  
+  const lastLogin=await connection2.execute('SELECT UA_LastLogin FROM UserAccess LIMIT 3')
+  console.log(lastLogin)
+  
+  const lastSent=await connection2.execute('SELECT UA_LastSent FROM UserAccess LIMIT 3')
+  console.log(lastSent)
+  
+  const lastReceived=await connection2.execute('SELECT UA_LastReceived FROM UserAccess LIMIT 3')
+  console.log(lastReceived)
+  
+  const disabledAccount=await connection2.execute('SELECT U_AccountDisabled FROM UserAccess WHERE U_AccountDisabled = 0 ')
+  console.log(disabledAccount)
+  
+  const enabledAccount=await connection2.execute('SELECT U_AccountDisabled FROM UserAccess WHERE U_AccountDisabled = 1')
+  console.log(enabledAccount)
+
+
+}
+manage();
+
+
+
+
 
 exports.DATA = (async (req, res) => {
 
