@@ -165,16 +165,17 @@ exports.reset = async (req, res) => {
 
 exports.GET=async  (req, res) => {
 
-  const companyId=req.params.id;
+  const id=req.params.id;
   const connection = await mysql.createConnection(config);
 
-  const result=await connection.execute(`SELECT * FROM user WHERE company_id="${companyId}"`);
-  if (result!=0){
-
-      res.status(200).json({staus:"200 ok ", data: result[0], success: true })
+  const result=await connection.execute(`SELECT * FROM user WHERE company_id="${id}"`);
+  console.log(result[0])
+  if (result[0].length == 0){
+    res.status(404).json({status:"404 not found",message:"companyId not found"});
+      
   } else {
 
-         res.status(404).json({status:"404 not found",message:"companyId not found"});
+    res.status(200).json({staus:"200 ok ", data: result[0], success: true })
     }
 }
 
@@ -215,3 +216,24 @@ exports.changePassword = async (req, res) => {
     res.status(404).json({status:"404 Not Found", message:"email id is not found"});
   }
 };
+
+exports.delete= async(req,res)=>{
+
+  const id=req.params.id;
+  console.log(id)
+  const connection = await mysql.createConnection(config);
+
+  const result2=await connection.execute(`SELECT * FROM user WHERE id="${id}"`)
+ 
+
+  if (result2[0].length == 0){
+    res.status(404).json({status:"404 not found",message:"User Id not found"});
+     
+  } else {
+    await connection.execute(`DELETE FROM user WHERE id="${id}"`);
+    res.status(200).json({staus:"200 ok ", message: "user delete successfully" })
+        
+    }
+
+
+}

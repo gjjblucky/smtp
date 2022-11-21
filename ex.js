@@ -1,8 +1,18 @@
-var x= "test";
-var y="domain.com";
+const fs = require('fs');
+const rsstream=fs.createReadStream("./s20220921.txt");
 
-var z=`${x}@${y}`;
-console.log(z);
+rsstream.on("data",(chunks)=>{
+// console.log(chunks.length)
+let x;
+ x=chunks;
+
+})
+
+console.log(x)
+
+rsstream.on("end",() =>{
+  console.log('There will be no more data.');
+})
 
 
   

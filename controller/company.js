@@ -34,17 +34,18 @@ exports.POST = async (req, res) => {
 
 exports.GET=async  (req, res) => {
 
-  const companyId=req.params.id;
+  const id=req.params.id;
   const connection = await mysql.createConnection(config);
 
-  const result=await connection.execute(`SELECT * FROM company WHERE id="${companyId}"`);
+  const result=await connection.execute(`SELECT * FROM company WHERE id="${id}"`);
   console.log(result[0]);
-  if (result == []){
+  if (result[0] ==0){
+    res.status(404).json({status:"404 not found",message:"companyId not found"});
 
-      res.status(200).json({staus:"200 ok ", data: result[0], success: true })
+     
   } else {
 
-         res.status(404).json({status:"404 not found",message:"companyId not found"});
+    res.status(200).json({staus:"200 ok ", data: result[0], success: true })
     }
 }
 
