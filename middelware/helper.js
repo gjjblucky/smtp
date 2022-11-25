@@ -51,6 +51,7 @@ const schemas = {
   domain: Joi.object().keys({
 
     domainName: Joi.string().trim().domain(),
+
     companyId: Joi.number().required()
   })
     .unknown(true)
