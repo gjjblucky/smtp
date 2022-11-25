@@ -1,11 +1,11 @@
-const express = require('express');
-const smtpControllers = require('../controller/smtp.js');
+const express = require('express')
+const smtpControllers = require('../controller/smtp.js')
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', smtpControllers.DATA);
-router.get('/getLogData', smtpControllers.FetchAllData);
+router.get('/', smtpControllers.DATA)
+router.get('/getLogData', smtpControllers.FetchAllData)
 
-router.get('/pagination',smtpControllers.PAGE)
+router.get('/pagination', smtpControllers.PAGE)
 
-module.exports = router;
+module.exports = router

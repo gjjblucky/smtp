@@ -1,12 +1,11 @@
-const {createPool} = require('mysql');
+const { createPool } = require('mysql')
 
-var db= createPool({
-    host:"localhost",
-    user:"root",
-    password:"Escale@123",
-    database:"smtps",
-    connectionLimit:10
-});
+const db = createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'Escale@123',
+  database: 'smtps',
+  connectionLimit: 10
+})
 
-
-module.exports=db;
+module.exports = db

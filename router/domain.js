@@ -1,10 +1,10 @@
-const express = require('express');
-const domainControllers = require('../controller/domain.js');
-const {schemas,middlewareValidation} = require("../middelware/helper.js");
+const express = require('express')
+const domainControllers = require('../controller/domain.js')
+const { schemas, middlewareValidation } = require('../middelware/helper.js')
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/addDomain', middlewareValidation(schemas.domain),domainControllers.POST);
-router.get('/companyId/:id',domainControllers.GET);
+router.post('/addDomain', middlewareValidation(schemas.domain), domainControllers.POST)
+router.get('/companyId/:id', domainControllers.GET)
 
-module.exports = router;
+module.exports = router

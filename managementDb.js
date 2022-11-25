@@ -1,4 +1,4 @@
-config2 = {
+const config2 = {
   host: '103.161.43.86',
   user: 'icewarp_dba',
   password: 'Pwd@2019',

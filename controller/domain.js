@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 const mysql = require('mysql2/promise')
 const config = require('../newdb')
 
@@ -19,7 +18,7 @@ exports.POST = async (req, res) => {
       (companyId || null)
     ])
     const result = await connection.execute(`SELECT * FROM domain WHERE domain_name = "${domainName}"`)
-    if (result != 0) {
+    if (result !== 0) {
       res.status(201).json({ status: '201 created', message: 'domain created successfully', data: result[0] })
     } else {
       res.status(404).json({ status: '404 not found', message: 'domain not found' })
@@ -32,7 +31,7 @@ exports.GET = async (req, res) => {
   const connection = await mysql.createConnection(config)
 
   const result = await connection.execute(`SELECT * FROM domain WHERE company_id="${id}"`)
-  if (result[0] == 0) {
+  if (result[0] === 0) {
     res.status(404).json({ status: '404 not found', message: 'companyId not found' })
   } else {
     res.status(200).json({ staus: '200 ok ', data: result[0], success: true })

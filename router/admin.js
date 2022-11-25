@@ -1,10 +1,10 @@
 
-const express = require('express');
-const adminControllers = require('../controller/admin.js');
-const {schemas,middlewareValidation} = require("../middelware/helper.js");
+const express = require('express')
+const adminControllers = require('../controller/admin.js')
+const { schemas, middlewareValidation } = require('../middelware/helper.js')
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/login',middlewareValidation(schemas.admin), adminControllers.SignIn);
+router.post('/login', middlewareValidation(schemas.admin), adminControllers.SignIn)
 
-module.exports = router;
+module.exports = router
